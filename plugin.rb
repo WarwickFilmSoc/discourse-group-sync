@@ -46,10 +46,10 @@ module ::GroupSync
           end
         end
       end
+    end
 
     # Fire a trigger for other plugins to listen too
     DiscourseEvent.trigger(:groups_synced)
-    end
   end
 end
 
