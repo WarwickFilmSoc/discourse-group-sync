@@ -33,7 +33,7 @@ module ::GroupSync
           group_inclusion = false
 
           custom_fields.each do |custom_field|
-            if User.custom_fields[custom_field] == "true"
+            if user.custom_fields[custom_field] == "true"
               group_inclusion = true
               break
             end
