@@ -3,7 +3,7 @@
 # version: 0.1
 # authors: Thomas Purchas
 # url: https://github.com/WarwickFilmSoc/discourse-group-sync
-enabled_site_setting :watching_enabled
+enabled_site_setting :group_sync_enabled
 
 module ::GroupSync
   def self.sync_groups!
