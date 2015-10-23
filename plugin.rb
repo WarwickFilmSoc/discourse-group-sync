@@ -53,7 +53,7 @@ end
 after_initialize do
   DiscourseEvent.on(:user_badge_granted) do
     if SiteSetting.group_sync_enabled
-      GroupSync.sync_groups!
+      Sidekiq::Client.enqueue(GroupSync::GroupSyncJob)
     end
   end
 
