@@ -18,7 +18,8 @@ module ::GroupSync
       "tech_team" => ["status_code[4001]"]
     }
 
-    crew = []
+    crew = ["status_code[3002]", "status_code[3001]", 
+            "status_code[1004]", "status_code[1002]"]
     group_mapping.each do |group, field|
       crew.append(field)
     end
@@ -51,7 +52,7 @@ end
 
 after_initialize do
   DiscourseEvent.on(:user_badge_granted) do
-    if SiteSetting.group_sync
+    if SiteSetting.group_sync_enabled
       GroupSync.sync_group!
     end
   end
@@ -61,7 +62,7 @@ after_initialize do
       every 1.day
 
       def execute(args)
-        if SiteSetting.group_sync
+        if SiteSetting.group_sync_enabled
           GroupSync.sync_group!
         end
       end
