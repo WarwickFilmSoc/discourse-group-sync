@@ -13,7 +13,7 @@ module ::GroupSync
       "q_proj" => ["status_code[3010]", "status_code[3009]", "status_code[3011]"],
       "t_proj" => ["status_code[3006]"],
       "duty_managers" => ["status_code[3005]"],
-      "t_dms" => ["status_code[3003]"],
+      "t_dm" => ["status_code[3003]"],
       "editors" => ["status_code[4004]"],
       "tech_team" => ["status_code[4001]"]
     }
