@@ -33,7 +33,7 @@ module ::GroupSync
           group_inclusion = false
 
           custom_fields.each do |custom_field|
-            if User.custom_field[custom_field] == "true"
+            if User.custom_fields[custom_field] == "true"
               group_inclusion = true
               break
             end
@@ -53,7 +53,7 @@ end
 after_initialize do
   DiscourseEvent.on(:user_badge_granted) do
     if SiteSetting.group_sync_enabled
-      GroupSync.sync_group!
+      GroupSync.sync_groups!
     end
   end
 
@@ -63,7 +63,7 @@ after_initialize do
 
       def execute(args)
         if SiteSetting.group_sync_enabled
-          GroupSync.sync_group!
+          GroupSync.sync_groups!
         end
       end
     end
