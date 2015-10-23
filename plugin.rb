@@ -21,6 +21,7 @@ module ::GroupSync
     crew = []
     group_mapping.each do |group, field|
       crew.append(field)
+    end
     group_mapping["crew"] = crew
 
     User.all.each do |user|
