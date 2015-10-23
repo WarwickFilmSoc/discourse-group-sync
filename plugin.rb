@@ -10,7 +10,7 @@ module ::GroupSync
     group_mapping = {
       "exec" => ["status_code[1003]"],
       "it_team" => ["status_code[4002]"],
-      "q_proj" => ["status_code[3010], status_code[3009]", "status_code[3011]"],
+      "q_proj" => ["status_code[3010]", "status_code[3009]", "status_code[3011]"],
       "t_proj" => ["status_code[3006]"],
       "duty_managers" => ["status_code[3005]"],
       "t_dms" => ["status_code[3003]"],
