@@ -1,4 +1,4 @@
-# name: Group Synd
+# name: Group Sync
 # about: Syncs Filmsoc and Discourse groups
 # version: 0.1
 # authors: Thomas Purchas
