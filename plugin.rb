@@ -6,7 +6,7 @@
 enabled_site_setting :group_sync_enabled
 
 module ::GroupSync
-  def self.sync_groups!
+  def self.sync_users(users)
     group_mapping = {
       "exec" => ["status_code[1003]"],
       "it_team" => ["status_code[4002]"],
@@ -25,7 +25,7 @@ module ::GroupSync
     end
     group_mapping["crew"] = crew
 
-    User.all.each do |user|
+    users.each do |user|
       group_mapping.each do |group_name, custom_fields|
         group = Group.find_by_name(group_name)
 
@@ -49,16 +49,22 @@ module ::GroupSync
     end
 
     # Fire a trigger for other plugins to listen too
-    DiscourseEvent.trigger(:groups_synced)
+    DiscourseEvent.trigger(:users_groups_synced, users)
   end
 end
 
 after_initialize do
-  DiscourseEvent.on(:user_badge_granted) do
+  user_sync = Proc.new do |badge_id, user_id|
     if SiteSetting.group_sync_enabled
-      Sidekiq::Client.enqueue(GroupSync::GroupSyncJob)
+      users = [User.find_by_id(user_id)]
+      Sidekiq::Client.enqueue(GroupSync::GroupSyncJob, users: users)
+      DiscourseEvent.trigger(:groups_synced)
     end
   end
+
+  DiscourseEvent.on(:user_badge_granted, &user_sync)
+  DiscourseEvent.on(:user_badge_removed, &user_sync)
+
 
   module ::GroupSync
     class GroupSyncJob < ::Jobs::Scheduled
@@ -66,7 +72,13 @@ after_initialize do
 
       def execute(args)
         if SiteSetting.group_sync_enabled
-          GroupSync.sync_groups!
+          users = args[:users]
+          if users
+            GroupSync.sync_users(users)
+          else
+            GroupSync.sync_users(User.all)
+          end
+          DiscourseEvent.trigger(:groups_synced)
         end
       end
     end
