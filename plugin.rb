@@ -56,8 +56,7 @@ end
 after_initialize do
   user_sync = Proc.new do |badge_id, user_id|
     if SiteSetting.group_sync_enabled
-      users = [User.find_by_id(user_id)]
-      Sidekiq::Client.enqueue(GroupSync::GroupSyncJob, users: users)
+      Sidekiq::Client.enqueue(GroupSync::GroupSyncJob, user_ids: [user_id])
       DiscourseEvent.trigger(:groups_synced)
     end
   end
@@ -72,8 +71,9 @@ after_initialize do
 
       def execute(args)
         if SiteSetting.group_sync_enabled
-          users = args[:users]
-          if users
+          user_ids = args[:user_ids]
+          if user_ids
+            users = user_ids.map {|n| User.find_by(id: n)}
             GroupSync.sync_users(users)
           else
             GroupSync.sync_users(User.all)
