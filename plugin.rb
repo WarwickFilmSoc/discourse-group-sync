@@ -56,7 +56,7 @@ end
 after_initialize do
   user_sync = Proc.new do |badge_id, user_id|
     if SiteSetting.group_sync_enabled
-      Sidekiq::Client.enqueue(GroupSync::GroupSyncJob, user_ids: [user_id])
+      Sidekiq::Client.enqueue_in(1.minutes, GroupSync::GroupSyncJob, user_ids: [user_id])
       DiscourseEvent.trigger(:groups_synced)
     end
   end
