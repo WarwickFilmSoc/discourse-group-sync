@@ -67,7 +67,11 @@ after_initialize do
 
   module ::GroupSync
     class GroupSyncJob < ::Jobs::Scheduled
-      every 1.hour
+      # Run every 10 min, but only work with people who
+      # had their SSO records updated in the last 12 mins
+      # this might result in some updates being missed if
+      # sidekiq is stopped for a period of time (server shutdown)
+      every 10.minutes
 
       def execute(args)
         if SiteSetting.group_sync_enabled
@@ -76,8 +80,25 @@ after_initialize do
             users = user_ids.map {|n| User.find_by(id: n)}
             GroupSync.sync_users(users)
           else
-            GroupSync.sync_users(User.all)
+            # Only sync people who where updated in the last 12 mins
+            users = User.joins(:single_sign_on_record)
+                        .where("single_sign_on_records.updated_at > ?",
+                              (Time.now - 12.minutes))
+            GroupSync.sync_users(users)
           end
+          DiscourseEvent.trigger(:groups_synced)
+        end
+      end
+
+    class GroupCompleteSyncJob < ::Jobs::Scheduled
+      # Run once a day. Its more intensive because we check
+      # every user. But this ensure eventual consistency
+      # even if sidekiq is stopped for a period of time.
+      every 1.day
+
+      def execute(args)
+        if SiteSetting.group_sync_enabled
+          GroupSync.sync_users(User.all)
           DiscourseEvent.trigger(:groups_synced)
         end
       end
