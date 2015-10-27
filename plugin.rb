@@ -67,7 +67,7 @@ after_initialize do
 
   module ::GroupSync
     class GroupSyncJob < ::Jobs::Scheduled
-      every 1.day
+      every 1.hour
 
       def execute(args)
         if SiteSetting.group_sync_enabled
