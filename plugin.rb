@@ -89,6 +89,7 @@ after_initialize do
           DiscourseEvent.trigger(:groups_synced)
         end
       end
+    end
 
     class GroupCompleteSyncJob < ::Jobs::Scheduled
       # Run once a day. Its more intensive because we check
