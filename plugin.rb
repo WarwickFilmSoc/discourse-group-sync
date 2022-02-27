@@ -1,6 +1,6 @@
 # name: Group Sync
 # about: Syncs Filmsoc and Discourse groups
-# version: 0.1
+# version: 0.2
 # authors: Thomas Purchas
 # url: https://github.com/WarwickFilmSoc/discourse-group-sync
 enabled_site_setting :group_sync_enabled
