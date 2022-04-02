@@ -1,6 +1,6 @@
 # name: Group Sync
 # about: Syncs Filmsoc and Discourse groups
-# version: 0.2
+# version: 0.3
 # authors: Thomas Purchas
 # url: https://github.com/WarwickFilmSoc/discourse-group-sync
 enabled_site_setting :group_sync_enabled
@@ -15,7 +15,9 @@ module ::GroupSync
       "duty_managers" => ["status_code[3005]"],
       "t_dm" => ["status_code[3003]"],
       "editors" => ["status_code[4004]"],
-      "tech_team" => ["status_code[4001]"]
+      "tech_team" => ["status_code[4001]"],
+      "35mm_proj" => ["status_code[3009]", "status_code[3011]"],
+      "70mm_proj" => ["status_code[3011]"]
     }
 
     crew = ["status_code[3002]", "status_code[3001]", 
